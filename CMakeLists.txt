@@ -13,8 +13,19 @@ FetchContent_Declare(SFML
         SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
+FetchContent_Declare(Eigen3
+        GIT_REPOSITORY https://gitlab.com/libeigen/eigen.git
+        GIT_TAG 3.4
+        GIT_SHALLOW ON
+        EXCLUDE_FROM_ALL
+        SYSTEM)
+FetchContent_MakeAvailable(Eigen3)
+
+add_executable(${PROJECT_NAME} src/main.cpp
+        src/game_of_life.cpp
+        src/game_of_life.h
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics Eigen3::Eigen)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 if(WIN32)
