@@ -4,31 +4,29 @@
 
 #include "game_of_life.h"
 
-namespace gol {
+namespace gol{
     void GameOfLife::update(){
-        for (int ix = 0; ix < field_->getWidth(); ix++)
-        {
-            for (int jx = 0; jx < field_->getHeight(); jx++)
+        auto iter = std::ranges::iota_view { 0, field_->getWidth() };
+
+        std::for_each(
+            std::execution::par_unseq,iter.begin(),iter.end(),
+            [this](auto&& ix)
             {
-                auto sum = field_->convolute(kernel, ix, jx);
-                if (sum < 2)
-                {
-                    field_->preset(ix, jx, false);
+                for (int jx = 0; jx < field_->getHeight(); jx++){
+                    auto sum = field_->convolute(kernel, ix, jx);
+                    if (sum < 2)
+                    {
+                        field_->preset(ix, jx, false);
+                    } else if ((*field_)(ix, jx) && (2 <= sum && sum <= 3)){
+                        // continue
+                    } else if ((*field_)(ix, jx) && (3 < sum)){
+                        field_->preset(ix, jx, false);
+                    } else if (!(*field_)(ix, jx) && (sum == 3)){
+                        field_->preset(ix, jx, true);
+                    }
                 }
-                else if ((*field_)(ix, jx) && (2 <= sum && sum <= 3))
-                {
-                    // continue
-                }
-                else if ((*field_)(ix, jx) && (3 < sum))
-                {
-                    field_->preset(ix, jx, false);
-                }
-                else if (!(*field_)(ix, jx) && (sum == 3))
-                {
-                    field_->preset(ix, jx, true);
-                }
-            }
-        }
+
+            });
 
         field_->update();
     }
@@ -51,7 +49,7 @@ namespace gol {
 
     bool GameOfLife::GameOfLifeField_::operator()(int x, int y) const{
         assert(0 <= x && x < getWidth());
-        assert(0 <= x && x < getHeight());
+        assert(0 <= y && y < getHeight());
 
         int xShifted = x + offset_, yShifted = y + offset_;
 
@@ -59,8 +57,7 @@ namespace gol {
     }
 
     GameOfLife::GameOfLifeField_::GameOfLifeField_(int width, int height, int offset)
-        : width_(width), height_(height), offset_(offset)
-    {
+        : width_(width), height_(height), offset_(offset){
         field_ = Eigen::MatrixXi(width_ + 2 * offset_, height_ + 2 * offset_);
         buffer_ = Eigen::MatrixXi(width_ + 2 * offset_, height_ + 2 * offset_);
 
@@ -78,7 +75,7 @@ namespace gol {
 
     void GameOfLife::GameOfLifeField_::preset(int x, int y, bool value){
         assert(0 <= x && x < getWidth());
-        assert(0 <= x && x < getHeight());
+        assert(0 <= y && y < getHeight());
 
         int xShifted = x + offset_, yShifted = y + offset_;
 

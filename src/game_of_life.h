@@ -7,6 +7,9 @@
 
 #include <memory>
 #include <random>
+#include <algorithm>
+#include <execution>
+#include <ranges>
 #include <Eigen/Eigen>
 
 namespace gol {

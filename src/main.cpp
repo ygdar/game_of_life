@@ -8,17 +8,17 @@
 
 int main()
 {
-    int cellXCount = 80;
-    int cellYCount = 80;
+    int cellXCount = 320;
+    int cellYCount = 160;
 
     auto game = gol::GameOfLife(cellXCount, cellYCount);
     game.setRandomSeed();
 
     auto window = sf::RenderWindow(
-            sf::VideoMode(800, 800, 32),
+            sf::VideoMode(1600, 800, 32),
             "CMake SFML Project",
             sf::Style::Titlebar | sf::Style::Close);
-    window.setFramerateLimit(10);
+    window.setFramerateLimit(100);
 
     sf::Color borderColor(112, 104, 104);
     sf::Color openCellColor(164, 151, 151);
@@ -42,7 +42,7 @@ int main()
 
         for (int ix = 0; ix < cellXCount; ix++)
         {
-            for (int jx = 0; jx < cellXCount; jx++)
+            for (int jx = 0; jx < cellYCount; jx++)
             {
                 sf::RectangleShape outerCell(cellSize);
                 outerCell.setPosition(sf::Vector2f(cellXSize * ix, cellYSize * jx));
