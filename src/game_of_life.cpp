@@ -6,33 +6,31 @@
 
 namespace gol{
     void GameOfLife::update(){
-        auto iter = std::ranges::iota_view { 0, field_->getWidth() };
-
-        std::for_each(
-            std::execution::par_unseq,iter.begin(),iter.end(),
-            [this](auto&& ix)
-            {
-                for (int jx = 0; jx < field_->getHeight(); jx++){
-                    auto sum = field_->convolute(kernel, ix, jx);
-                    if (sum < 2)
-                    {
-                        field_->preset(ix, jx, false);
-                    } else if ((*field_)(ix, jx) && (2 <= sum && sum <= 3)){
-                        // continue
-                    } else if ((*field_)(ix, jx) && (3 < sum)){
-                        field_->preset(ix, jx, false);
-                    } else if (!(*field_)(ix, jx) && (sum == 3)){
-                        field_->preset(ix, jx, true);
-                    }
-                }
-
-            });
-
         field_->update();
     }
 
     bool GameOfLife::getCellStatus(int x, int y){
         return (*field_)(x, y);
+    }
+
+    void GameOfLife::prepare(){
+
+        for (int ix = 0; ix < field_->getWidth(); ix++)
+        {
+            for (int jx = 0; jx < field_->getHeight(); jx++){
+                auto sum = field_->convolute(kernel, ix, jx);
+                if (sum < 2)
+                {
+                    field_->preset(ix, jx, false);
+                } else if ((*field_)(ix, jx) && (2 <= sum && sum <= 3)){
+                    // continue
+                } else if ((*field_)(ix, jx) && (3 < sum)){
+                    field_->preset(ix, jx, false);
+                } else if (!(*field_)(ix, jx) && (sum == 3)){
+                    field_->preset(ix, jx, true);
+                }
+            }
+        }
     }
 
     int GameOfLife::GameOfLifeField_::convolute(const Eigen::MatrixXi &kernel_, int x, int y){

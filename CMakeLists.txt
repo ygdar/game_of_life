@@ -25,6 +25,9 @@ FetchContent_MakeAvailable(Eigen3)
 # unit tests
 # https://stackoverflow.com/questions/9881288/compiling-a-boost-test-with-cmake
 
+set(RESOURCE_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/resources/euler.otf)
+
 add_executable(${PROJECT_NAME} src/main.cpp
         src/game_of_life.cpp
         src/game_of_life.h
@@ -32,6 +35,10 @@ add_executable(${PROJECT_NAME} src/main.cpp
 
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics Eigen3::Eigen)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:${PROJECT_NAME}>)
 
 if(WIN32)
     add_custom_command(

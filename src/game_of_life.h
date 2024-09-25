@@ -36,6 +36,7 @@ namespace gol {
             field_->update();
         }
 
+        void prepare();
         void update();
         bool getCellStatus(int ix, int y);
     private:
