@@ -29,8 +29,9 @@ set(RESOURCE_FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/resources/euler.otf)
 
 add_executable(${PROJECT_NAME} src/main.cpp
-        src/game_of_life.cpp
         src/game_of_life.h
+        src/game_rule.h
+        src/game_field.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics Eigen3::Eigen)
